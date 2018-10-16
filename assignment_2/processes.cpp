@@ -19,12 +19,22 @@ int newProcess(string name, long address) {
   return idCounter++;
 }
 
+int findProcess(int i) {
+  for (int j = 0; j < noOfProcesses; j++) {
+    if(id[j]=i){
+      return j;
+    }
+
+  }
+}
+  return -1;
+
 void removeProcess(int i) {
   int j = findProcess(i);
   noOfProcesses--;
   for (int j = i; j < noOfProcesses; j++) {
     if(i==id[j]){
-      id[j]==NULL;
+      id[j]=NULL;
       processName[j]=NULL;
       addr[j]=NULL;
       state[j]=NULL;
@@ -52,16 +62,6 @@ void listProcesses() {
   for (int i = 0; i < noOfProcesses; i++) {
     cout << id[i] << ' ' << processName[i] << ' ' << state[i] << endl;
   }
-}
-
-int findProcess(int i) {
-  for (int j = 0; j < noOfProcesses; j++) {
-    if(id[j]=i){
-      return j;
-    }
-
-  }
-  return -1;
 }
 
 void suspendProcess(int i) {
@@ -108,6 +108,7 @@ int main() {
   while (true) {
     if (charactersAvailable()) {
       command = readLine();
+      print command;
       if (command == "RUN") {
         string name = readLine();
         long address = stoi(readLine());
