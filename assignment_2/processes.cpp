@@ -12,9 +12,9 @@ int noOfProcesses = 0;
 int idCounter = 0;
 
 int newProcess(string name, long address) {
-
-  // TO DO
-
+  processName[noOfProcesses]=name;
+  id[noOfProcesses]=idCounter;
+  addr[noOfProcesses]=address;
   noOfProcesses++;
   return idCounter++;
 }
@@ -22,8 +22,12 @@ int newProcess(string name, long address) {
 void removeProcess(int i) {
   noOfProcesses--;
   for (int j = i; j < noOfProcesses; j++) {
-
-    // TO DO
+    if(i==id[j]){
+      id[j]==NULL;
+      processName[j]=NULL;
+      addr[j]=NULL;
+      state[j]=NULL;
+    }
 
   }
 }
@@ -32,9 +36,7 @@ void executeProcesses() {
   long newAddr;
   for (int i = 0; i < noOfProcesses; i++) {
     if (state[i] == RUNNING) {
-
-      // TO DO
-
+      newAddr = execute(addr[i]);
       if (newAddr == 0) {
         cout << "Process \"" << processName[i] << "\" has terminated." << endl;
         removeProcess(i--);
@@ -53,8 +55,9 @@ void listProcesses() {
 
 int findProcess(int i) {
   for (int j = 0; j < noOfProcesses; j++) {
-
-    // TO DO
+    if(id[j]=i){
+      return j;
+    }
 
   }
   return -1;
@@ -70,8 +73,7 @@ void suspendProcess(int i) {
     cout << "Process already paused." << endl;
   }
   else {
-
-    // TO DO
+    state[j]=PAUSED;
 
   }
 }
@@ -86,9 +88,7 @@ void resumeProcess(int i) {
     cout << "Process already running." << endl;
   }
   else {
-
-    // TO DO
-
+    state[j]=RUNNING;
   }
 }
 
@@ -97,9 +97,8 @@ void killProcess(int i) {
   if (j == -1) {
     cout << "Process does not exist." << endl;
   } else {
-
-    // TO DO
-
+    removeProcess(j);
+    //TODO kill
   }
 }
 
@@ -122,10 +121,12 @@ int main() {
         suspendProcess(i);
       }
       if (command == "RESUME") {
-        //To DO
+        int i = stoi(readLine())
+        resumeProcess(i)
       }
       if (command == "KILL") {
-        //To DO
+        int i = stoi(readLine())
+        killProcess(i)
       }
     }
     else {

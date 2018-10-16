@@ -53,6 +53,24 @@ void *calloc(size_t n, size_t m){
   return ptr;
 }
 
+void free(void *ptr){ //TODO verify
+	struct block* bp = head;
+	if(bp->next == NULL) {
+		if(bp->addr == ptr) {
+			bp = NULL;
+		}
+	} else {
+		for(bp = head; bp->next->addr != ptr; bp = bp->next);
+		if(bp->next->addr == ptr) {
+			struct block* del = bp->next;
+			if(del->next != NULL) {
+				bp->next = del->next;
+			}
+			del = NULL;
+		}
+	}
+}
+
 void *realloc(void *ptr, size_t n){ //TODO verify
   void *nptr;
   size_t i;
@@ -72,25 +90,7 @@ void *realloc(void *ptr, size_t n){ //TODO verify
       return nptr;
     }
   }
-  return NULL
-}
-
-void free(void *ptr){ //TODO verify
-	struct block* bp = head;
-	if(bp->next == NULL) {
-		if(bp->addr == ptr) {
-			bp = NULL;
-		}
-	} else {
-		for(bp = head; bp->next->addr != ptr; bp = bp->next);
-		if(bp->next->addr == ptr) {
-			struct block* del = bp->next;
-			if(del->next != NULL) {
-				bp->next = del->next;
-			}
-			del = NULL;
-		}
-	}
+  return NULL;
 }
 
 // A function to copy block of 'n' bytes from source
@@ -123,7 +123,7 @@ void main(){ //TODO add tests
 
 	if (!(str = malloc(17))) {
 		uart_puts("out of memory\n");
-		return;
+		return 0;
 	}
   strcpy(str, "malloc() works!\n");
 	uart_puts("before realloc(): ");
@@ -132,7 +132,7 @@ void main(){ //TODO add tests
 	/* Test realloc() */
 	if (!(str = realloc(str, 69))) {
 		uart_puts("out of memory\n");
-		return;
+		return 0;
 	}
 
 	uart_puts("after realloc(): ");
@@ -140,7 +140,7 @@ void main(){ //TODO add tests
 
 	if (!(str = calloc(17,2))) {
 		uart_puts("out of memory\n");
-		return;
+		return 0;
 	}
   free(str);
 }
