@@ -20,6 +20,7 @@ int newProcess(string name, long address) {
 }
 
 void removeProcess(int i) {
+  int j = findProcess(i);
   noOfProcesses--;
   for (int j = i; j < noOfProcesses; j++) {
     if(i==id[j]){
@@ -98,7 +99,6 @@ void killProcess(int i) {
     cout << "Process does not exist." << endl;
   } else {
     removeProcess(j);
-    //TODO kill
   }
 }
 
