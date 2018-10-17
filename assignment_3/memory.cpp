@@ -14,9 +14,13 @@ void sort() {
     sorted = true;
     for (int i = 0; i < noOfBlocks - 1; i++) {
       if (addr[i] > addr[i + 1]) {
-        temp = addr[i];
+        long temp = addr[i];
         addr[i]=addr[i+1];
         addr[i+1]=temp;
+        temp = length[i];
+        length[i]=length[i+1];
+        length[i+1]=temp;
+
         sorted = false;
       }
     }
@@ -25,12 +29,16 @@ void sort() {
 
 long findFreeSpace(long size) {
   sort();
-  long prev = 0;
-  for (int i = 0; i < noOfBlocks; i++) {
-    if (addr[i] - prev > size) return prev; //TODO check this
-    prev = addr[i];
+  if (noOfBlocks == 0) return 0;
+  if (addr[0] >= size) return 0;
+  for (int i = 0; i < noOfBlocks - 1; i++) {
+    //check if there is space between 2 used addresses
+    if(addr[i + 1] - (addr[i] + length[i]) >= size) {
+      return addr[i] + length[i];
+    }
   }
-  if (getMem() - prev > size) return prev;
+  //if there is space left after the last address used
+  if (getMem() - (addr[noOfBlocks - 1] +  length[noOfBlocks - 1]) >= size) return addr[noOfBlocks - 1] + length[noOfBlocks - 1];
   return -1;
 }
 
@@ -40,33 +48,30 @@ void allocate(long size) {
     cout << "Not enough memory." << endl;
   }
   else {
-    noOfBlocks++;
     addr[noOfBlocks]=f;
     length[noOfBlocks]=size;
+    noOfBlocks++;
     cout << f << endl;
   }
 }
 
 void deallocate(long a) {
-  bool found = false;
   for (int i = 0; i < noOfBlocks; i++) {
     if (addr[i] == a) {
-      found = true;
+      for(int j = i; j < noOfBlocks - 1; j++){
+        addr[j] = addr[j+1];
+        length[j] = length[j+1];
+      }
       noOfBlocks--;
-    }
-    if (found) {
-      addr[i]=NULL;
-      length[i]=NULL;
-      break;
+      cout << "Address " << a << " deallocated" << endl;
     }
   }
-  if (!found) cout << "Address not allocated." << endl;
 }
 
 long freeMem() {
   long total = getMem();
   for (int i = 0; i < noOfBlocks; i++) {
-    deallocate(i);
+    total = total-length[i];
   }
   return total;
 }
@@ -173,11 +178,8 @@ void store(long a, string type, string data) {
 }
 
 string retrieveChar(long a) {
-  string ret;
-  int b = recallByte(a);
-  // TO DO
-
-  return ret;
+  string str(1, static_cast<char>(recallByte(a)));
+  return str;
 }
 
 string retrieveInt(long a) {
@@ -185,8 +187,7 @@ string retrieveInt(long a) {
   int b2 = recallByte(a + 1);
   int i;
 
-  // TO DO
-
+  i = ((b1 << 8) | b2);
   return to_string(i);
 }
 
@@ -205,8 +206,6 @@ string retrieveFloat(long a) {
   mantissa += b;
   float number;
 
-  // TO DO
-
   return to_string(number);
 }
 
@@ -214,9 +213,7 @@ string retrieveString(long a) {
   string ret;
   char c;
   while ((c = (char)recallByte(a++)) != '\0') {
-
-    // TO DO
-
+    ret = ret + c;
   }
   return ret;
 }
@@ -253,6 +250,7 @@ string retrieve(long a, string type) {
 
 int main() {
   string command;
+  cout << "ENTER COMMAND: ALLOC / DEALLOC / FREEMEM / SET / GET"<<endl;
   while (true) {
     command = readLine();
     if (command == "ALLOC") {
@@ -275,7 +273,7 @@ int main() {
     if (command == "GET") {
       long i = stoi(readLine());
       string type = readLine();
-      retrieve(i,type);
+      cout << retrieve(i,type)<<endl;
     }
   }
 }
