@@ -27,8 +27,8 @@ void sort() {
   }
 }
 
-sort();
 long findFreeSpace(long size) {
+  sort();
   if (noOfBlocks == 0) return 0;
   if (addr[0] >= size) return 0;
   for (int i = 0; i < noOfBlocks - 1; i++) {
