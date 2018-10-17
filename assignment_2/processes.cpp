@@ -15,8 +15,19 @@ int newProcess(string name, long address) {
   processName[noOfProcesses]=name;
   id[noOfProcesses]=idCounter;
   addr[noOfProcesses]=address;
+  state[noOfProcesses]=RUNNING;
   noOfProcesses++;
   return idCounter++;
+}
+
+int findProcess(int i) {
+  for (int j = 0; j < noOfProcesses; j++) {
+    if(id[j]=i){
+      return j;
+    }
+
+  }
+  return -1;
 }
 
 void removeProcess(int i) {
@@ -24,8 +35,8 @@ void removeProcess(int i) {
   noOfProcesses--;
   for (int j = i; j < noOfProcesses; j++) {
     if(i==id[j]){
-      id[j]==NULL;
-      processName[j]=NULL;
+      id[j]=NULL;
+      processName[j]="";
       addr[j]=NULL;
       state[j]=NULL;
     }
@@ -36,8 +47,10 @@ void removeProcess(int i) {
 void executeProcesses() {
   long newAddr;
   for (int i = 0; i < noOfProcesses; i++) {
+	cout << "state " <<state[i] << endl;
     if (state[i] == RUNNING) {
       newAddr = execute(addr[i]);
+      cout << " addr " <<newAddr<<endl;
       if (newAddr == 0) {
         cout << "Process \"" << processName[i] << "\" has terminated." << endl;
         removeProcess(i--);
@@ -52,16 +65,6 @@ void listProcesses() {
   for (int i = 0; i < noOfProcesses; i++) {
     cout << id[i] << ' ' << processName[i] << ' ' << state[i] << endl;
   }
-}
-
-int findProcess(int i) {
-  for (int j = 0; j < noOfProcesses; j++) {
-    if(id[j]=i){
-      return j;
-    }
-
-  }
-  return -1;
 }
 
 void suspendProcess(int i) {
@@ -121,12 +124,12 @@ int main() {
         suspendProcess(i);
       }
       if (command == "RESUME") {
-        int i = stoi(readLine())
-        resumeProcess(i)
+        int i = stoi(readLine());
+        resumeProcess(i);
       }
       if (command == "KILL") {
-        int i = stoi(readLine())
-        killProcess(i)
+        int i = stoi(readLine());
+        killProcess(i);
       }
     }
     else {
