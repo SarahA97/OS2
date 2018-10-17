@@ -48,12 +48,44 @@ void *malloc(size_t size){
 
 void *calloc(size_t n, size_t m){
 	void *ptr;
-	if (!(ptr = malloc(n * m)))
+	if (!(ptr = malloc(n * m)))// If malloc can't t find a memory space the size of n*m, return null
 		return NULL;
+
+  for (size_t i = 0; i < n + m; i++){
+  	// Sets memory to 0
+  	((unsigned char *) ptr)[i] = 0;
+  }
   return ptr;
 }
 
-void free(void *ptr){ //TODO verify
+void *memmove(void *dest, const void *src, size_t n)
+{
+
+	char *d = dest;
+	const char *s = src;
+  uart_puts(n);
+	if (d == s){
+
+		return dest;
+  }
+
+	if (s > d) {
+		while (n--)
+			*d++ = *s++;
+
+	} else {
+		d += n - 1;
+		s += n - 1;
+
+		while (n--)
+			*d-- = *s--;
+	}
+
+
+	return dest;
+}
+
+void free(void *ptr){
 	struct block* bp = head;
 	if(bp->next == NULL) {
 		if(bp->addr == ptr) {
@@ -74,18 +106,19 @@ void free(void *ptr){ //TODO verify
 void *realloc(void *ptr, size_t n){ //TODO verify
 	struct block* bp = head;
   void *nptr;
-  size_t i;
 
 	if (!(nptr = malloc(n))) {
 		free(ptr);
 		return NULL;
 	}
 
-	if (!ptr)
-		return nptr;
 
+	if (!ptr)// If parameter is null, returns the new pointer
+		return nptr;
+  //suart_puts(ptr);
   for(bp = head; bp->next != NULL; bp = bp->next){
     if(bp->addr == ptr){
+      uart_puts(bp->size);
       memmove(nptr,ptr,bp->size);
       free(ptr);
       return nptr;
@@ -94,54 +127,33 @@ void *realloc(void *ptr, size_t n){ //TODO verify
   return NULL;
 }
 
-// A function to copy block of 'n' bytes from source
-// address 'src' to destination address 'dest'.
-void memmove(void *dest, void *src, size_t n){
-  // Typecast src and dest addresses to (char *)
-  char *csrc = (char *)src;
-  char *cdest = (char *)dest;
-
-  // Create a temporary array to hold data of src
-  char *temp[n];
-  // Copy data from csrc[] to temp[]
-  for (int i=0; i<n; i++)
-    temp[i] = csrc[i];
-
-   // Copy data from temp[] to cdest[]
-  for (int i=0; i<n; i++)
-    cdest[i] = temp[i];
-  //free temp[];
-}
-void main(){ //TODO add tests
+void main(){ 
 	uart_init();
-  char *startStr;
 	char *str;
 
-	strcpy(startStr, "Welcome\nEnter a command\n");
-	uart_puts(startStr);
-
-	uart_puts("Welcome\n");
-
-	if (!(str = malloc(17))) {
+	if (!(str = malloc(69))) {
 		uart_puts("out of memory\n");
-		return 0;
-	}
-  strcpy(str, "malloc() works!\n");
-	uart_puts("before realloc(): ");
-	uart_puts(str);
-
-	/* Test realloc() */
-	if (!(str = realloc(str, 69))) {
-		uart_puts("out of memory\n");
-		return 0;
+		return;
 	}
 
-	uart_puts("after realloc(): ");
+  strcpy(str, "malloc() works\n");
 	uart_puts(str);
 
 	if (!(str = calloc(17,2))) {
 		uart_puts("out of memory\n");
-		return 0;
+		return ;
 	}
+  strcpy(str, "calloc() works\n");
+	uart_puts(str);
+
+	if (!(str = realloc(str, 69))) {
+		uart_puts("out of memory\n");
+		return ;
+	}
+  strcpy(str, "realloc() works\n");
+	uart_puts(str);
+  free(str);
+  strncpy(str,"strncpy() works strncpy() works",15);
+  uart_puts(str);
   free(str);
 }
