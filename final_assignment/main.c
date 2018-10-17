@@ -72,6 +72,7 @@ void free(void *ptr){ //TODO verify
 }
 
 void *realloc(void *ptr, size_t n){ //TODO verify
+	struct block* bp = head;
   void *nptr;
   size_t i;
 
@@ -86,7 +87,7 @@ void *realloc(void *ptr, size_t n){ //TODO verify
   for(bp = head; bp->next != NULL; bp = bp->next){
     if(bp->addr == ptr){
       memmove(nptr,ptr,bp->size);
-      free(ptr)
+      free(ptr);
       return nptr;
     }
   }

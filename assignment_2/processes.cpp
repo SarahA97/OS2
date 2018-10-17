@@ -27,8 +27,13 @@ int findProcess(int i) {
     }
 
   }
+<<<<<<< HEAD
   return -1;
 }
+=======
+}
+  return -1;
+>>>>>>> 05a82a07d2e538425609525d553ac2a7b85c8d29
 
 void removeProcess(int i) {
   int j = findProcess(i);
@@ -36,7 +41,11 @@ void removeProcess(int i) {
   for (int j = i; j < noOfProcesses; j++) {
     if(i==id[j]){
       id[j]=NULL;
+<<<<<<< HEAD
       processName[j]="";
+=======
+      processName[j]=NULL;
+>>>>>>> 05a82a07d2e538425609525d553ac2a7b85c8d29
       addr[j]=NULL;
       state[j]=NULL;
     }
@@ -111,6 +120,7 @@ int main() {
   while (true) {
     if (charactersAvailable()) {
       command = readLine();
+      print command;
       if (command == "RUN") {
         string name = readLine();
         long address = stoi(readLine());
